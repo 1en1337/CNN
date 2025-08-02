@@ -1,0 +1,49 @@
+# 项目主控制配置文件 / Main project control configuration file
+# 用于控制任务流程，具体训练参数请修改configs/目录下的配置文件
+# Used to control task workflow, modify config files in configs/ directory for specific training parameters
+
+# 数据配置 / Data configuration
+data_config:
+  source_dir: "data"           # 原始数据目录（你的数据放这里） / Source data directory (put your data here)
+  output_dir: "dataset_split"  # 分割后的数据目录 / Split data directory
+  train_ratio: 0.7            # 训练集比例 / Training set ratio
+  val_ratio: 0.15             # 验证集比例 / Validation set ratio
+  test_ratio: 0.15            # 测试集比例 / Test set ratio
+
+# 训练配置选择 / Training configuration selection
+training:
+  # 选择使用哪个配置文件 / Choose which config file to use
+  # 可选: "default_config.yaml", "rtx4060_config.yaml", 或自定义配置
+  # Options: "default_config.yaml", "rtx4060_config.yaml", or custom config
+  config_file: "configs/rtx4060_config.yaml"
+  
+  # 快速测试时覆盖的参数 / Parameters to override for quick test
+  quick_test:
+    enabled: true
+    num_epochs: 10  # 覆盖配置文件中的epoch数 / Override epoch number from config file
+    
+  # 恢复训练 / Resume training
+  resume:
+    enabled: false
+    checkpoint_path: "checkpoints/checkpoint_epoch_50.pth"
+
+# 推理配置 / Inference configuration
+inference:
+  checkpoint_dir: "checkpoints"  # 检查点目录 / Checkpoint directory
+  checkpoint_name: "best_model.pth"   # 模型文件名 / Model filename
+  test_input: "dataset_split/test/sample_0000.h5"  # 测试输入 / Test input
+  output_dir: "results"  # 输出目录 / Output directory
+  visualize: true  # 是否可视化 / Whether to visualize
+
+# 数据预处理配置 / Data preprocessing configuration
+preprocessing:
+  source_dir: "dataset/train"   # 源数据目录（H5格式） / Source data directory (H5 format)
+  output_dir: "dataset/lmdb"    # LMDB输出目录 / LMDB output directory
+  format: "lmdb"  # 输出格式: lmdb, mmap, shard / Output format: lmdb, mmap, shard
+  num_workers: 8  # 处理进程数 / Number of processing workers
+
+# 监控配置 / Monitoring configuration
+monitoring:
+  tensorboard_logdir: "logs"  # TensorBoard日志目录 / TensorBoard log directory
+  tensorboard_port: 6006  # TensorBoard端口 / TensorBoard port
+  gpu_monitor_interval: 1  # GPU监控间隔(秒) / GPU monitoring interval (seconds)
